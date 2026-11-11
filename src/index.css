@@ -193,7 +193,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .field-icon { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 8px; color: #c55578; background: #fff0f3; }
 .form-control { width: 100%; min-height: 47px; border: 1px solid #ead8dd; border-radius: 11px; outline: none; color: #684450; background: #fffdfd; font-size: 12px; padding: 0 13px; }
 .form-control:focus { border-color: #d591a5; box-shadow: 0 0 0 3px rgba(213, 145, 165, .13); }
-.form-control:invalid { color: #806b74; }
+.date-input-shell { position: relative; display: flex; width: 100%; min-height: 47px; align-items: center; border: 1px solid #ead8dd; border-radius: 11px; background: #fffdfd; }
+.date-input-shell:focus-within { border-color: #d591a5; box-shadow: 0 0 0 3px rgba(213, 145, 165, .13); }
+.date-input-display { overflow: hidden; color: #806b74; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; padding: 0 13px; }
+.date-input-display.has-value { color: #684450; }
+.date-input-icon { flex: 0 0 auto; margin: 0 13px 0 auto; color: #a74464; }
+.date-input-native { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; min-height: 0; border: 0; opacity: 0; cursor: pointer; }
+.date-input-native:focus { border: 0; box-shadow: none; }
+.date-input-native::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
 .time-label { margin-top: 16px; }
 .date-form > .button { margin-top: 22px; }
 .form-card > .tiny-note { margin-top: 13px; }

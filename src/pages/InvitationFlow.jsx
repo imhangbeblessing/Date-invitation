@@ -48,6 +48,12 @@ function formatTime(value) {
   })
 }
 
+function formatInputDate(value) {
+  if (!value) return 'mm/dd/yyyy'
+  const [year, month, day] = value.split('-')
+  return `${month}/${day}/${year}`
+}
+
 export function InvitationScreen({ noAttempts, declined, onYes, onNoAttempt, onDecline, onRestart }) {
   const answerAreaRef = useRef(null)
   const [noPosition, setNoPosition] = useState(null)
@@ -212,15 +218,21 @@ export function DateSelectionScreen({ appointment, onChange, onContinue }) {
           <span className="field-icon"><CalendarDays size={16} aria-hidden="true" /></span>
           <span>Pick a day</span>
         </label>
-        <input
-          id="date"
-          className="form-control"
-          type="date"
-          min={getToday()}
-          value={appointment.date}
-          onChange={(event) => onChange((current) => ({ ...current, date: event.target.value }))}
-          required
-        />
+        <div className="date-input-shell">
+          <span className={`date-input-display${appointment.date ? ' has-value' : ''}`} aria-hidden="true">
+            {formatInputDate(appointment.date)}
+          </span>
+          <CalendarDays className="date-input-icon" size={17} aria-hidden="true" />
+          <input
+            id="date"
+            className="form-control date-input-native"
+            type="date"
+            min={getToday()}
+            value={appointment.date}
+            onChange={(event) => onChange((current) => ({ ...current, date: event.target.value }))}
+            required
+          />
+        </div>
 
         <label className="field-label time-label" htmlFor="time">
           <span className="field-icon"><Clock3 size={16} aria-hidden="true" /></span>
