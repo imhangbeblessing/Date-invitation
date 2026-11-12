@@ -12,6 +12,7 @@ import {
   RotateCcw,
   Sparkles,
   Star,
+  X,
 } from 'lucide-react'
 import { FaHeart } from 'react-icons/fa'
 import { invitationConfig } from '../data/invitationConfig'
@@ -59,49 +60,58 @@ export function InvitationScreen({ noAttempts, declined, onYes, onNoAttempt, onD
   const [noPosition, setNoPosition] = useState(null)
   const [keyboardDeclineVisible, setKeyboardDeclineVisible] = useState(false)
 
-  const dodgeNoButton = (event) => {
+  const dodgeNoButton = () => {
     const area = answerAreaRef.current
     if (!area) return
 
     const areaRect = area.getBoundingClientRect()
-    const buttonRect = area.querySelector('.no-button').getBoundingClientRect()
-    const yesRect = area.querySelector('.yes-button').getBoundingClientRect()
-    const maxLeft = areaRect.width - buttonRect.width
-    const maxTop = areaRect.height - buttonRect.height
-    const pointerX = event.clientX - areaRect.left
-    const pointerY = event.clientY - areaRect.top
-    const buttonX = buttonRect.left - areaRect.left
-    const buttonY = buttonRect.top - areaRect.top
-    const pointerIsNear = Math.hypot(
-      buttonX + buttonRect.width / 2 - pointerX,
-      buttonY + buttonRect.height / 2 - pointerY,
-    ) < 92
+    const noButton = area.querySelector('.no-button')
+    const yesButton = area.querySelector('.yes-button')
+    if (!noButton || !yesButton) return
 
-    if (!pointerIsNear) return
-
-    const candidates = [0, maxLeft / 2, maxLeft].flatMap((left) =>
-      [0, maxTop / 2, maxTop].map((top) => ({ left, top })),
+    const buttonRect = noButton.getBoundingClientRect()
+    const yesRect = yesButton.getBoundingClientRect()
+    const maxLeft = Math.max(0, areaRect.width - buttonRect.width)
+    const maxTop = Math.max(0, areaRect.height - buttonRect.height)
+    const currentLeft = buttonRect.left - areaRect.left
+    const currentTop = buttonRect.top - areaRect.top
+    const yesLeft = yesRect.left - areaRect.left
+    const yesTop = yesRect.top - areaRect.top
+    const overlapsYes = ({ left, top }) => (
+      left < yesLeft + yesRect.width
+      && left + buttonRect.width > yesLeft
+      && top < yesTop + yesRect.height
+      && top + buttonRect.height > yesTop
     )
-    const available = candidates.filter(({ left, top }) => {
-      const overlapsYes = left < yesRect.right - areaRect.left + 8
-        && left + buttonRect.width > yesRect.left - areaRect.left - 8
-        && top < yesRect.bottom - areaRect.top + 8
-        && top + buttonRect.height > yesRect.top - areaRect.top - 8
-      const movedEnough = Math.hypot(left - buttonX, top - buttonY) > 40
-      const awayFromPointer = Math.hypot(
-        left + buttonRect.width / 2 - pointerX,
-        top + buttonRect.height / 2 - pointerY,
-      ) > 80
-      return !overlapsYes && movedEnough && awayFromPointer
-    })
+    let nextPosition
 
-    const nextPosition = available.sort((a, b) => {
-      const distance = ({ left, top }) => Math.hypot(
-        left + buttonRect.width / 2 - pointerX,
-        top + buttonRect.height / 2 - pointerY,
-      )
-      return distance(b) - distance(a)
-    })[0]
+    for (let attempt = 0; attempt < 40; attempt += 1) {
+      const candidate = {
+        left: Math.random() * maxLeft,
+        top: Math.random() * maxTop,
+      }
+      const movedEnough = Math.hypot(
+        candidate.left - currentLeft,
+        candidate.top - currentTop,
+      ) > 32
+
+      if (!overlapsYes(candidate) && movedEnough) {
+        nextPosition = candidate
+        break
+      }
+    }
+
+    if (!nextPosition) {
+      nextPosition = [
+        { left: 0, top: maxTop },
+        { left: maxLeft, top: maxTop },
+        { left: 0, top: 0 },
+        { left: maxLeft, top: 0 },
+      ].find((candidate) => (
+        !overlapsYes(candidate)
+        && Math.hypot(candidate.left - currentLeft, candidate.top - currentTop) > 32
+      ))
+    }
 
     if (nextPosition) {
       onNoAttempt()
@@ -129,10 +139,6 @@ export function InvitationScreen({ noAttempts, declined, onYes, onNoAttempt, onD
               <div
                 className="answer-buttons"
                 ref={answerAreaRef}
-                onPointerMove={dodgeNoButton}
-                onPointerDown={(event) => {
-                  if (event.target.closest('.no-button')) dodgeNoButton(event)
-                }}
               >
                 <ContinueButton onClick={onYes} className="yes-button">
                   Yes, absolutely
@@ -140,6 +146,8 @@ export function InvitationScreen({ noAttempts, declined, onYes, onNoAttempt, onD
                 <button
                   type="button"
                   className="button button-soft no-button"
+                  onPointerEnter={dodgeNoButton}
+                  onPointerDown={dodgeNoButton}
                   onFocus={(event) => {
                     if (event.currentTarget.matches(':focus-visible')) {
                       setKeyboardDeclineVisible(true)
@@ -150,7 +158,7 @@ export function InvitationScreen({ noAttempts, declined, onYes, onNoAttempt, onD
                   aria-describedby="no-message"
                   aria-label="No, moves away when approached"
                 >
-                  No <span aria-hidden="true">🙈</span>
+                  No <X size={16} aria-hidden="true" />
                 </button>
               </div>
               <p className="no-message" id="no-message" aria-live="polite">
@@ -245,7 +253,7 @@ export function DateSelectionScreen({ appointment, onChange, onContinue }) {
           onChange={(event) => onChange((current) => ({ ...current, time: event.target.value }))}
           required
         >
-          <option value="" disabled>Choose your perfect time</option>
+          <option value="" disabled>Select a time...</option>
           {invitationConfig.timeOptions.map((option) => (
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
@@ -254,6 +262,42 @@ export function DateSelectionScreen({ appointment, onChange, onContinue }) {
         <ArrowContinue disabled={!valid} type="submit">Set the date!</ArrowContinue>
       </form>
       <p className="tiny-note">Only dates from today onwards — I’m not a time traveler.</p>
+    </div>
+  )
+}
+
+const foodOptions = [
+  { name: 'Pizza', emoji: '🍕' },
+  { name: 'Sushi', emoji: '🍣' },
+  { name: 'Burgers', emoji: '🍔' },
+  { name: 'Pasta', emoji: '🍝' },
+  { name: 'Shawarma', emoji: '🌯' },
+  { name: 'Rice & Chicken', emoji: '🍚🍗' },
+]
+
+export function FoodSelectionScreen({ food, onChange, onContinue }) {
+  return (
+    <div className="centered-card panel food-card">
+      <ScreenEyebrow>pick your vibe</ScreenEyebrow>
+      <h1 className="compact-title">What are we feeling? 🍱 ✨</h1>
+      <p className="body-copy">Choose what sounds good to you.</p>
+      <div className="food-grid" role="group" aria-label="Choose what to eat">
+        {foodOptions.map(({ name, emoji }) => (
+          <button
+            key={name}
+            className={`food-option${food === name ? ' is-selected' : ''}`}
+            type="button"
+            aria-pressed={food === name}
+            onClick={() => onChange(name)}
+          >
+            <span className="food-emoji" aria-hidden="true">{emoji}</span>
+            <span>{name}</span>
+          </button>
+        ))}
+      </div>
+      <ContinueButton onClick={onContinue} disabled={!food}>
+        {food ? `Let’s get ${food}!` : 'Choose your vibe'}
+      </ContinueButton>
     </div>
   )
 }

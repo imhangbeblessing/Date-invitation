@@ -5,6 +5,7 @@ import {
   CelebrationScreen,
   DateConfirmationScreen,
   DateSelectionScreen,
+  FoodSelectionScreen,
   InvitationScreen,
   YesConfirmationScreen,
   AgreementIntroductionScreen,
@@ -13,10 +14,12 @@ import { FloatingHearts, ProgressIndicator } from './components/Shared'
 import { invitationConfig } from './data/invitationConfig'
 
 const initialAppointment = { date: '', time: '' }
+const initialFood = ''
 
 function App() {
   const [step, setStep] = useState(0)
   const [appointment, setAppointment] = useState(initialAppointment)
+  const [food, setFood] = useState(initialFood)
   const [noAttempts, setNoAttempts] = useState(0)
   const [declined, setDeclined] = useState(false)
   const reduceMotion = useReducedMotion()
@@ -24,6 +27,7 @@ function App() {
   const restart = () => {
     setStep(0)
     setAppointment(initialAppointment)
+    setFood(initialFood)
     setNoAttempts(0)
     setDeclined(false)
   }
@@ -45,13 +49,19 @@ function App() {
       onChange={setAppointment}
       onContinue={() => setStep(3)}
     />,
+    <FoodSelectionScreen
+      key="food"
+      food={food}
+      onChange={setFood}
+      onContinue={() => setStep(4)}
+    />,
     <DateConfirmationScreen
       key="confirmation"
       appointment={appointment}
-      onContinue={() => setStep(4)}
+      onContinue={() => setStep(5)}
     />,
-    <AgreementIntroductionScreen key="intro" onContinue={() => setStep(5)} />,
-    <AgreementScreen key="agreement" onContinue={() => setStep(6)} />,
+    <AgreementIntroductionScreen key="intro" onContinue={() => setStep(6)} />,
+    <AgreementScreen key="agreement" onContinue={() => setStep(7)} />,
     <CelebrationScreen
       key="celebration"
       appointment={appointment}

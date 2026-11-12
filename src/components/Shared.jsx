@@ -29,7 +29,7 @@ export function FloatingHearts() {
 }
 
 export function ProgressIndicator({ step, total }) {
-  const labels = ['The question', 'A little surprise', 'Pick a day', 'The plan', 'One small thing', 'The agreement', 'It’s a date']
+  const labels = ['The question', 'A little surprise', 'Pick a day', 'Pick your vibe', 'The plan', 'One small thing', 'The agreement', 'It’s a date']
 
   return (
     <div className="progress-wrap" aria-label={`Step ${step + 1} of ${total}`}>

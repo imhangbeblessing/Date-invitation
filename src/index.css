@@ -111,7 +111,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .answer-buttons {
   position: relative;
   width: min(100%, 340px);
-  min-height: 116px;
+  min-height: 160px;
   margin: 0 auto;
 }
 .answer-buttons > .yes-button,
@@ -121,8 +121,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 }
 .answer-buttons > .yes-button { left: calc(50% - 115px); }
 .answer-buttons > .no-button {
-  left: calc(50% + 37px);
-  transition: left .24s cubic-bezier(.2,.8,.2,1), top .24s cubic-bezier(.2,.8,.2,1), background-color .18s ease, box-shadow .18s ease;
+  left: calc(50% + 50px);
+  transition: left 0s, top 0s, background-color .18s ease, box-shadow .18s ease;
 }
 .button {
   position: relative;
@@ -149,6 +149,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .button-primary:hover:not(:disabled) { background: linear-gradient(135deg, #ad385e, #94274e); box-shadow: 0 11px 22px rgba(192, 61, 105, .25); }
 .button-soft { color: #76586b; background: #f5eff9; border-color: #ede3f2; }
 .button-soft:hover:not(:disabled) { background: #eee5f4; }
+.answer-buttons .yes-button,
+.answer-buttons .no-button { border: 1px solid transparent; border-radius: 999px; color: #fff; }
+.answer-buttons .yes-button { background: #d6618c; box-shadow: 0 8px 18px rgba(214, 97, 140, .22); }
+.answer-buttons .yes-button:hover:not(:disabled) { background: #d6618c; box-shadow: 0 11px 22px rgba(214, 97, 140, .28); }
+.answer-buttons .no-button { background: #9b87b0; box-shadow: 0 8px 18px rgba(112, 88, 140, .2); }
+.answer-buttons .no-button:hover:not(:disabled) { background: #9b87b0; box-shadow: 0 11px 22px rgba(112, 88, 140, .26); }
 .button-outline { color: #903650; border-color: #e8c8d2; background: #fff; box-shadow: 0 4px 12px rgba(112, 58, 76, .05); }
 .button-outline:hover:not(:disabled) { border-color: #d997ab; background: #fff8fa; }
 .yes-button { min-width: 158px; }
@@ -188,6 +194,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
 .calendar-illustration { position: relative; display: grid; width: 62px; height: 62px; place-items: center; margin-bottom: 10px; border: 1px solid #f1dce1; border-radius: 19px; color: #c95278; background: #fff5f6; }
 .calendar-illustration span { position: absolute; right: -7px; bottom: -7px; display: grid; width: 25px; height: 25px; place-items: center; border: 2px solid white; border-radius: 50%; color: #fff; background: #d56888; font-size: 16px; }
 .form-card .body-copy { margin-bottom: 23px; }
+.food-card .body-copy { margin-bottom: 20px; }
+.food-card .compact-title { font-size: clamp(30px, 3.8vw, 39px); }
+.food-grid { display: grid; width: min(100%, 390px); grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.food-option { display: flex; min-height: 105px; flex-direction: column; align-items: center; justify-content: center; gap: 9px; border: 1px solid #f0e5e3; border-radius: 16px; color: #684450; background: #fffaf7; cursor: pointer; font-family: var(--serif); font-size: 13px; transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.food-option:hover { border-color: #e4b7c3; background: #fff6f5; transform: translateY(-2px); }
+.food-option.is-selected { border: 2px solid #c66b7e; background: #fff3f3; box-shadow: 0 0 0 3px rgba(198, 107, 126, .1); }
+.food-emoji { font-family: 'DM Sans', sans-serif; font-size: 29px; line-height: 1; }
+.food-card > .button { margin-top: 21px; }
 .date-form { display: flex; width: min(100%, 344px); flex-direction: column; align-items: stretch; text-align: left; }
 .field-label { display: flex; align-items: center; gap: 8px; margin: 0 0 7px; color: #684450; font-size: 11px; font-weight: 700; }
 .field-icon { display: grid; width: 25px; height: 25px; place-items: center; border-radius: 8px; color: #c55578; background: #fff0f3; }
@@ -293,6 +307,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .sparkle-doodle { top: 31px; right: 19px; }
   .centered-card { padding: 35px 25px 31px; }
   .centered-card .compact-title { font-size: clamp(33px, 8.5vw, 40px); }
+  .food-card .compact-title { font-size: clamp(28px, 7.6vw, 36px); }
+  .food-grid { gap: 9px; }
+  .food-option { min-height: 92px; border-radius: 14px; font-size: 12px; }
+  .food-emoji { font-size: 26px; }
   .agreement-card { padding: 23px 26px 28px; }
   .agreement-title { font-size: 38px !important; }
   .celebration-card { padding-top: 28px; }
@@ -306,6 +324,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible
   .progress-label { max-width: 92px; }
   .progress-track { width: 46px; }
   .invitation-card { padding: 31px 22px 26px; }
+  .answer-buttons > .no-button { left: calc(50% + 42px); }
   .button { min-height: 46px; padding-inline: 14px; }
   .yes-button { min-width: 140px; }
   .no-button { min-width: 80px; }
